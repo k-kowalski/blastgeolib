@@ -6,6 +6,8 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace blastgeolib {
+
 PolygonMesh::PolygonMesh(std::vector<Vertex>&& vertices, 
                 std::vector<Face>&& faces, 
                 std::vector<TexCoord>&& texCoords, 
@@ -119,3 +121,4 @@ std::vector<std::array<int, 3>> PolygonMesh::computeTriangulation() const {
     return allTriangles;
 }
 
+} // namespace blastgeolib

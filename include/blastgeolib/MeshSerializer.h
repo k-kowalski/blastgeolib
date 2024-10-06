@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+namespace blastgeolib {
+
 class MeshSerializer {
 public:
     virtual ~MeshSerializer() = default;
@@ -19,5 +21,7 @@ protected:
 private:
     static std::shared_ptr<MeshSerializer> createSerializer(const std::string& filename);
 };
+
+} // namespace blastgeolib
 
 #endif // MESH_SERIALIZER_H

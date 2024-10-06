@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include <stdexcept>
 
+namespace blastgeolib {
+
 std::shared_ptr<MeshSerializer> MeshSerializer::createSerializer(const std::string& filename) {
     std::string extension = getFileExtension(filename);
     if (extension == "obj") {
@@ -24,3 +26,5 @@ void MeshSerializer::write(const std::string& filename, const PolygonMesh& mesh)
     auto serializer = createSerializer(filename);
     serializer->writeMeshData(filename, mesh);
 }
+
+} // namespace blastgeolib

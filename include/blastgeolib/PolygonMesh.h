@@ -3,9 +3,9 @@
 
 #include <string>
 #include <vector>
-
-
 #include <Eigen/Dense>
+
+namespace blastgeolib {
 
 class PolygonMesh {
 public:
@@ -46,5 +46,7 @@ private:
     bool writeSTL(const std::string& filename);
     void writeTriangle(std::ofstream& file, int idx1, int idx2, int idx3);
 };
+
+} // namespace blastgeolib
 
 #endif // POLYGONMESH_H

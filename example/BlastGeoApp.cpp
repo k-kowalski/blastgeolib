@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include <iostream>
 
+using namespace blastgeolib;
+
 int main(int argc, char* argv[]) {
     if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " <input OBJ file> <output STL file>" << std::endl;

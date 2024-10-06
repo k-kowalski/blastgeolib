@@ -3,6 +3,8 @@
 
 #include "MeshSerializer.h"
 
+namespace blastgeolib {
+
 class STLSerializer : public MeshSerializer {
 public:
     PolygonMesh loadMeshData(const std::string& filename) override;
@@ -10,5 +12,7 @@ public:
 private:
     void writeTriangle(std::ofstream& file, const std::vector<PolygonMesh::Vertex>& vertices, int idx1, int idx2, int idx3);
 };
+
+} // namespace blastgeolib
 
 #endif // STL_SERIALIZER_H

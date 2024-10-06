@@ -1,6 +1,8 @@
 #include "STLSerializer.h"
 #include <fstream>
 
+namespace blastgeolib {
+
 PolygonMesh STLSerializer::loadMeshData(const std::string&) {
     throw std::runtime_error("STL loading is not supported.");
 }
@@ -51,3 +53,5 @@ void STLSerializer::writeTriangle(std::ofstream& file, const std::vector<Polygon
     uint16_t attributeByteCount = 0;
     file.write(reinterpret_cast<const char*>(&attributeByteCount), sizeof(attributeByteCount));
 }
+
+} // namespace blastgeolib

@@ -3,6 +3,8 @@
 #include <sstream>
 #include <fstream>
 
+namespace blastgeolib {
+
 PolygonMesh OBJSerializer::loadMeshData(const std::string& filename) {
     std::vector<PolygonMesh::Vertex> vertices;
     std::vector<PolygonMesh::TexCoord> texCoords;
@@ -68,3 +70,5 @@ PolygonMesh OBJSerializer::loadMeshData(const std::string& filename) {
 void OBJSerializer::writeMeshData(const std::string&, const PolygonMesh&) {
     throw std::runtime_error("OBJ writing is not supported.");
 }
+
+} // namespace blastgeolib

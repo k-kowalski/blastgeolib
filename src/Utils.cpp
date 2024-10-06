@@ -2,6 +2,8 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace blastgeolib {
+
 std::vector<std::array<int, 3>> triangulatePolygon(const std::vector<int>& polygon) {
     std::vector<std::array<int, 3>> triangles;
     std::vector<int> remainingVertices = polygon;
@@ -67,3 +69,5 @@ std::string getFileExtension(const std::string& filename) {
     }
     return "";
 }
+
+} // namespace blastgeolib
