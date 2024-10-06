@@ -17,6 +17,10 @@ FetchContent_MakeAvailable(eigen)
 
 add_library(blastgeolib
     src/PolygonMesh.cpp
+    src/MeshSerializer.cpp
+    src/OBJSerializer.cpp
+    src/STLSerializer.cpp
+    src/Utils.cpp
 )
 
 target_include_directories(blastgeolib

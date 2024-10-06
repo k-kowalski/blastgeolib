@@ -6,32 +6,8 @@
 #include <sstream>
 #include <stdexcept>
 
-PolygonMesh::PolygonMesh() = default;
-
-bool PolygonMesh::load(const std::string& filename) {
-    std::string extension = getFileExtension(filename);
-    
-    if (extension == "obj") {
-        return loadOBJ(filename);
-    } else {
-        std::cerr << "Unsupported file format: " << extension << std::endl;
-        return false;
-    }
-}
-
-
-bool PolygonMesh::write(const std::string& filename) {
-    std::string extension = getFileExtension(filename);
-
-    if (extension == "stl") {
-        return writeSTL(filename);
-    } else {
-        std::cerr << "Unsupported file format: " << extension << std::endl;
-        return false;
-    }
-}
-
-#include <Eigen/Dense>
+PolygonMesh::PolygonMesh(std::vector<Vertex>&& vertices, std::vector<Face>&& faces) :
+    vertices(std::move(vertices)), faces(std::move(faces)) {}
 
 void PolygonMesh::translate(const Eigen::Vector3f& translation) {
     Eigen::Matrix4f translationMatrix = Eigen::Matrix4f::Identity();
@@ -67,6 +43,14 @@ void PolygonMesh::scale(const Eigen::Vector3f& scaleFactors) {
         homoVertex = scaleMatrix * homoVertex;
         vertex = homoVertex.head<3>();
     }
+}
+
+const std::vector<PolygonMesh::Vertex>& PolygonMesh::getVertices() const {
+    return vertices;
+}
+
+const std::vector<PolygonMesh::Face>& PolygonMesh::getFaces() const {
+    return faces;
 }
 
 bool PolygonMesh::loadOBJ(const std::string& filename) {
@@ -150,6 +134,7 @@ void PolygonMesh::writeTriangle(std::ofstream& file, int idx1, int idx2, int idx
 
 /*
 Robust Inside-Outside Segmentation using Generalized Winding Numbers by Alec Jacobson, Ladislav Kavan and Olga Sorkine-Hornung
+impl inspired by https://github.com/marmakoide/inside-3d-mesh
 */
 bool PolygonMesh::isPointInside(const Eigen::Vector3f& point) {
     float windingNumber = 0.0f;

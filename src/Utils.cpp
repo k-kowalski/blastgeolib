@@ -1,12 +1,6 @@
-#ifndef UTILS_H
-#define UTILS_H
-
-#include <string>
-#include <iostream>
-#include <vector>
-#include <Eigen/Dense>
-
-
+#include "Utils.h"
+#include <sstream>
+#include <stdexcept>
 
 std::vector<std::array<int, 3>> triangulatePolygon(const std::vector<int>& polygon) {
     std::vector<std::array<int, 3>> triangles;
@@ -23,17 +17,13 @@ std::vector<std::array<int, 3>> triangulatePolygon(const std::vector<int>& polyg
 
     while (remainingVertices.size() > 3) {
         triangles.push_back({ remainingVertices[0], remainingVertices[1], remainingVertices[2] });
-
         remainingVertices.erase(remainingVertices.begin() + 1);
     }
 
     triangles.push_back({ remainingVertices[0], remainingVertices[1], remainingVertices[2] });
 
-
     return triangles;
 }
-
-
 
 float generalizedWindingNumber(const Eigen::Vector3f& A, const Eigen::Vector3f& B, const Eigen::Vector3f& C, const Eigen::Vector3f& X) {
     Eigen::Vector3f vecA = A - X;
@@ -54,7 +44,6 @@ float generalizedWindingNumber(const Eigen::Vector3f& A, const Eigen::Vector3f& 
 
     return windingContrib;
 }
-
 
 std::vector<std::string> split(const std::string& s, char delim) {
     std::stringstream ss(s);
@@ -78,5 +67,3 @@ std::string getFileExtension(const std::string& filename) {
     }
     return "";
 }
-
-#endif // UTILS_H

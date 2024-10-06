@@ -1,4 +1,4 @@
-#include "blastgeolib/PolygonMesh.h"
+#include "blastgeolib/MeshSerializer.h"
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -11,15 +11,7 @@ int main(int argc, char* argv[]) {
     std::string inputFile = argv[1];
     std::string outputFile = argv[2];
 
-    PolygonMesh mesh;
-
-    if (mesh.load(inputFile)) {
-        std::cout << "OBJ file loaded successfully: " << inputFile << std::endl;
-    }
-    else {
-        std::cerr << "Failed to load OBJ file: " << inputFile << std::endl;
-        return 1;
-    }
+    PolygonMesh mesh = MeshSerializer::load(argv[1]);
 
     float surfaceArea = mesh.getSurfaceArea();
     std::cout << "The surface area of the model is: " << surfaceArea << " units^2" << std::endl;
@@ -61,12 +53,7 @@ int main(int argc, char* argv[]) {
     mesh.scale(scaleFactors);
     std::cout << "Mesh scaled by (2, 2, 2)." << std::endl;
 
-    if (mesh.write(outputFile)) {
-        std::cout << "Transformed STL file written successfully: " << outputFile << std::endl;
-    }
-    else {
-        std::cerr << "Failed to write STL file: " << outputFile << std::endl;
-    }
+    MeshSerializer::write(outputFile, mesh);
 
     return 0;
 }
