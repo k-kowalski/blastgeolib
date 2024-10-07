@@ -15,8 +15,6 @@ public:
 
     struct Face {
         std::vector<int> vertexIndices;
-        std::vector<int> texCoordIndices;
-        std::vector<int> normalIndices;
     };
 
     PolygonMesh(std::vector<Vertex>&& vertices, 

@@ -23,8 +23,43 @@ void STLSerializer::writeMeshData(const std::string& filename, const PolygonMesh
     uint32_t triangleCount = 0;
 
     const std::vector<PolygonMesh::Vertex>& verts = mesh.getVertices();
+    const std::vector<PolygonMesh::Normal>& normals = mesh.getNormals();
     mesh.streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
-        writeTriangle(file, verts, tri[0], tri[1], tri[2]);
+
+        const int idx1 = tri[0];
+        const int idx2 = tri[1];
+        const int idx3 = tri[2];
+
+        const PolygonMesh::Vertex& v1 = verts[idx1];
+        const PolygonMesh::Vertex& v2 = verts[idx2];
+        const PolygonMesh::Vertex& v3 = verts[idx3];
+
+        PolygonMesh::Normal faceNormal;
+        if (normals.size() > 0)
+        {
+            faceNormal = (normals[tri[0]] + normals[tri[1]] + normals[tri[2]]) / 3.0f;
+        }
+        else
+        {
+            Eigen::Vector3f edge1 = v2 - v1;
+            Eigen::Vector3f edge2 = v3 - v1;
+            faceNormal = edge1.cross(edge2).normalized();
+        }
+
+        float normal[3] = { faceNormal.x(), faceNormal.y(), faceNormal.z() };
+        file.write(reinterpret_cast<const char*>(normal), sizeof(normal));
+
+        float coords1[3] = { v1.x(), v1.y(), v1.z() };
+        float coords2[3] = { v2.x(), v2.y(), v2.z() };
+        float coords3[3] = { v3.x(), v3.y(), v3.z() };
+
+        file.write(reinterpret_cast<const char*>(coords1), sizeof(coords1));
+        file.write(reinterpret_cast<const char*>(coords2), sizeof(coords2));
+        file.write(reinterpret_cast<const char*>(coords3), sizeof(coords3));
+
+        uint16_t attributeByteCount = 0;
+        file.write(reinterpret_cast<const char*>(&attributeByteCount), sizeof(attributeByteCount));
+
         triangleCount++;
     });
 
@@ -32,27 +67,6 @@ void STLSerializer::writeMeshData(const std::string& filename, const PolygonMesh
     file.write(reinterpret_cast<const char*>(&triangleCount), sizeof(triangleCount));
 
     file.close();
-}
-
-void STLSerializer::writeTriangle(std::ofstream& file, const std::vector<PolygonMesh::Vertex>& vertices, int idx1, int idx2, int idx3) {
-    float normal[3] = { 0.0f, 0.0f, 0.0f };
-    file.write(reinterpret_cast<const char*>(normal), sizeof(normal));
-
-    const PolygonMesh::Vertex& v1 = vertices[idx1];
-    const PolygonMesh::Vertex& v2 = vertices[idx2];
-    const PolygonMesh::Vertex& v3 = vertices[idx3];
-
-    float coords1[3] = { v1.x(), v1.y(), v1.z() };
-    float coords2[3] = { v2.x(), v2.y(), v2.z() };
-    float coords3[3] = { v3.x(), v3.y(), v3.z() };
-
-    file.write(reinterpret_cast<const char*>(coords1), sizeof(coords1));
-    file.write(reinterpret_cast<const char*>(coords2), sizeof(coords2));
-    file.write(reinterpret_cast<const char*>(coords3), sizeof(coords3));
-
-    // Write the attribute byte count (set to 0)
-    uint16_t attributeByteCount = 0;
-    file.write(reinterpret_cast<const char*>(&attributeByteCount), sizeof(attributeByteCount));
 }
 
 } // namespace blastgeolib
