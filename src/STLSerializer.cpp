@@ -16,19 +16,20 @@ void STLSerializer::writeMeshData(const std::string& filename, const PolygonMesh
     char header[80] = {};
     file.write(header, 80);
 
-    const std::vector<std::array<int,3>> tris = mesh.computeTriangulation();
+    uint32_t triangleCountPos = file.tellp();
+    uint32_t dummyTriangleCount = 0;
+    file.write(reinterpret_cast<const char*>(&dummyTriangleCount), sizeof(dummyTriangleCount));
 
-    uint32_t numTriangles = 0;
-    for (const auto& tri : tris) {
-        numTriangles++;
-    }
-    file.write(reinterpret_cast<const char*>(&numTriangles), sizeof(numTriangles));
+    uint32_t triangleCount = 0;
 
     const std::vector<PolygonMesh::Vertex>& verts = mesh.getVertices();
-
-    for (const auto& tri : tris) {
+    mesh.streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
         writeTriangle(file, verts, tri[0], tri[1], tri[2]);
-    }
+        triangleCount++;
+    });
+
+    file.seekp(triangleCountPos);
+    file.write(reinterpret_cast<const char*>(&triangleCount), sizeof(triangleCount));
 
     file.close();
 }

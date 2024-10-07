@@ -36,6 +36,7 @@ public:
     const std::vector<Normal>& getNormals() const { return normals; }
     const std::vector<Face>& getFaces() const { return faces; }
     std::vector<std::array<int, 3>> computeTriangulation() const;
+    void streamFuncOnTriangulation(const std::function<void(const std::array<int, 3>&)>& func) const;
 private:
     std::vector<Vertex> vertices;
     std::vector<TexCoord> texCoords;

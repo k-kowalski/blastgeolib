@@ -57,28 +57,23 @@ impl inspired by https://github.com/marmakoide/inside-3d-mesh
 */
 bool PolygonMesh::isPointInside(const Eigen::Vector3f& point) {
     float windingNumber = 0.0f;
-    
-    std::vector<std::array<int, 3>> triangles = computeTriangulation();
 
-    for (const auto& tri : triangles) {
-        float t;
+    streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
         const Eigen::Vector3f& v0 = vertices[tri[0]];
         const Eigen::Vector3f& v1 = vertices[tri[1]];
         const Eigen::Vector3f& v2 = vertices[tri[2]];
 
         windingNumber += generalizedWindingNumber(v0, v1, v2, point);
-    }
+    });
 
-    const float twoPi = 2.0f * 3.14;
+    const float twoPi = 2.0f * EIGEN_PI;
     return std::abs(windingNumber) >= twoPi;
 }
 
 float PolygonMesh::getSurfaceArea() const {
     float totalArea = 0.0f;
 
-    std::vector<std::array<int, 3>> triangles = computeTriangulation();
-
-    for (const auto& tri : triangles) {
+    streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
         const Eigen::Vector3f& v0 = vertices[tri[0]];
         const Eigen::Vector3f& v1 = vertices[tri[1]];
         const Eigen::Vector3f& v2 = vertices[tri[2]];
@@ -87,24 +82,22 @@ float PolygonMesh::getSurfaceArea() const {
         Eigen::Vector3f edge2 = v2 - v0;
         float triangleArea = 0.5f * edge1.cross(edge2).norm();
         totalArea += triangleArea;
-    }
+    });
 
     return totalArea;
 }
 
 float PolygonMesh::getVolume() const {
     float totalVolume = 0.0f;
-    
-    std::vector<std::array<int, 3>> triangles = computeTriangulation();
 
-    for (const auto& tri : triangles) {
+    streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
         const Eigen::Vector3f& v0 = vertices[tri[0]];
         const Eigen::Vector3f& v1 = vertices[tri[1]];
         const Eigen::Vector3f& v2 = vertices[tri[2]];
 
         float tetrahedronVolume = (v0.dot(v1.cross(v2))) / 6.0f;
         totalVolume += tetrahedronVolume;
-    }
+    });
 
     return totalVolume;
 }
@@ -119,6 +112,16 @@ std::vector<std::array<int, 3>> PolygonMesh::computeTriangulation() const {
     }
 
     return allTriangles;
+}
+
+void PolygonMesh::streamFuncOnTriangulation(const std::function<void(const std::array<int, 3>&)>& func) const {
+    for (const Face& face : faces) {
+        std::vector<std::array<int, 3>> triangles = triangulatePolygon(face.vertexIndices);
+
+        for (const auto& tri : triangles) {
+            func(tri);
+        }
+    }
 }
 
 } // namespace blastgeolib
