@@ -1,28 +1,29 @@
 #include "Utils.h"
 #include <sstream>
 #include <stdexcept>
+#include <filesystem>
 
 namespace blastgeolib {
 
+// polygon assumed to be convex
+// based on Ear Clipping algorithm
 std::vector<std::array<int, 3>> triangulatePolygon(const std::vector<int>& polygon) {
     std::vector<std::array<int, 3>> triangles;
-    std::vector<int> remainingVertices = polygon;
 
-    if (remainingVertices.size() < 3) {
+    if (polygon.size() < 3) {
         throw std::runtime_error("Polygon with less than 3 vertices detected.");
     }
 
-    if (remainingVertices.size() == 3) {
-        triangles.push_back({ remainingVertices[0], remainingVertices[1], remainingVertices[2] });
+    if (polygon.size() == 3) {
+        triangles.push_back({ polygon[0], polygon[1], polygon[2] });
         return triangles;
     }
 
-    while (remainingVertices.size() > 3) {
-        triangles.push_back({ remainingVertices[0], remainingVertices[1], remainingVertices[2] });
-        remainingVertices.erase(remainingVertices.begin() + 1);
+    int vertOffset = 1;
+    while (vertOffset < polygon.size() - 1) {
+        triangles.push_back({ polygon[0], polygon[vertOffset], polygon[vertOffset + 1] });
+        vertOffset++;
     }
-
-    triangles.push_back({ remainingVertices[0], remainingVertices[1], remainingVertices[2] });
 
     return triangles;
 }
@@ -63,11 +64,7 @@ int parseIndex(const std::string& token, int offset) {
 }
 
 std::string getFileExtension(const std::string& filename) {
-    size_t dotPos = filename.rfind('.');
-    if (dotPos != std::string::npos) {
-        return filename.substr(dotPos + 1);
-    }
-    return "";
+    return std::filesystem::path(filename).extension().string();
 }
 
 } // namespace blastgeolib

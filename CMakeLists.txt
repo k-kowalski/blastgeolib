@@ -7,13 +7,21 @@ include(FetchContent)
 
 set(FETCHCONTENT_BASE_DIR ${PROJECT_SOURCE_DIR}/deps)
 
-FetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG 3.4.0  # Specify version tag
-)
+if(NOT TARGET Eigen3::Eigen)
+    include(FetchContent)
 
-FetchContent_MakeAvailable(eigen)
+    set(FETCHCONTENT_BASE_DIR ${PROJECT_SOURCE_DIR}/deps)
+
+    FetchContent_Declare(
+      eigen
+      GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+      GIT_TAG 3.4.0
+      GIT_SHALLOW TRUE
+    )
+
+    FetchContent_MakeAvailable(eigen)
+endif()
+
 
 add_library(blastgeolib
     src/PolygonMesh.cpp

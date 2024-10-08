@@ -3,7 +3,7 @@
 
 namespace blastgeolib {
 
-PolygonMesh STLSerializer::loadMeshData(const std::string&) {
+std::unique_ptr<PolygonMesh> STLSerializer::loadMeshData(const std::string&) {
     throw std::runtime_error("STL loading is not supported.");
 }
 
@@ -37,7 +37,7 @@ void STLSerializer::writeMeshData(const std::string& filename, const PolygonMesh
         PolygonMesh::Normal faceNormal;
         if (normals.size() > 0)
         {
-            faceNormal = (normals[tri[0]] + normals[tri[1]] + normals[tri[2]]) / 3.0f;
+            faceNormal = (normals[idx1] + normals[idx2] + normals[idx3]) / 3.0f;
         }
         else
         {

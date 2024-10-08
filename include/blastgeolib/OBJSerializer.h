@@ -7,7 +7,7 @@ namespace blastgeolib {
 
 class OBJSerializer : public MeshSerializer {
 public:
-    PolygonMesh loadMeshData(const std::string& filename) override;
+    std::unique_ptr<PolygonMesh> loadMeshData(const std::string& filename) override;
     void writeMeshData(const std::string& filename, const PolygonMesh& mesh) override;
 };
 

@@ -1,2 +1,4 @@
 # blastgeolib
 
+Geometry processing library
+

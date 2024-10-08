@@ -6,18 +6,18 @@
 
 namespace blastgeolib {
 
-std::shared_ptr<MeshSerializer> MeshSerializer::createSerializer(const std::string& filename) {
+std::unique_ptr<MeshSerializer> MeshSerializer::createSerializer(const std::string& filename) {
     std::string extension = getFileExtension(filename);
-    if (extension == "obj") {
-        return std::make_shared<OBJSerializer>();
-    } else if (extension == "stl") {
-        return std::make_shared<STLSerializer>();
+    if (extension == ".obj") {
+        return std::make_unique<OBJSerializer>();
+    } else if (extension == ".stl") {
+        return std::make_unique<STLSerializer>();
     } else {
         throw std::runtime_error("Unsupported file format: " + extension);
     }
 }
 
-PolygonMesh MeshSerializer::load(const std::string& filename) {
+std::unique_ptr<PolygonMesh> MeshSerializer::load(const std::string& filename) {
     auto serializer = createSerializer(filename);
     return serializer->loadMeshData(filename);
 }
