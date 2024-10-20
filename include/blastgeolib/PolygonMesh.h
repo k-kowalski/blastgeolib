@@ -26,7 +26,7 @@ public:
     void rotate(float angle, const Eigen::Vector3f& axis);
     void scale(const Eigen::Vector3f& scaleFactors);
 
-    bool isPointInside(const Eigen::Vector3f& point);
+    bool isPointInside(const Eigen::Vector3f& point) const;
     float getSurfaceArea() const;
     float getVolume() const;
     const std::vector<Vertex>& getVertices() const { return vertices; }

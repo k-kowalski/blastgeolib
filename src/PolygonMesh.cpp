@@ -55,7 +55,7 @@ void PolygonMesh::scale(const Eigen::Vector3f& scaleFactors) {
 Robust Inside-Outside Segmentation using Generalized Winding Numbers by Alec Jacobson, Ladislav Kavan and Olga Sorkine-Hornung
 impl inspired by https://github.com/marmakoide/inside-3d-mesh
 */
-bool PolygonMesh::isPointInside(const Eigen::Vector3f& point) {
+bool PolygonMesh::isPointInside(const Eigen::Vector3f& point) const {
     float windingNumber = 0.0f;
 
     streamFuncOnTriangulation([&](const std::array<int, 3>& tri) {
