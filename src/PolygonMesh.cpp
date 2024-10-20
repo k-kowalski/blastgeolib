@@ -115,13 +115,10 @@ std::vector<std::array<int, 3>> PolygonMesh::computeTriangulation() const {
 }
 
 void PolygonMesh::streamFuncOnTriangulation(const std::function<void(const std::array<int, 3>&)>& func) const {
-    for (const Face& face : faces) {
+    std::for_each(faces.begin(), faces.end(), [func](const Face& face) {
         std::vector<std::array<int, 3>> triangles = triangulatePolygon(face.vertexIndices);
-
-        for (const auto& tri : triangles) {
-            func(tri);
-        }
-    }
+        std::for_each(triangles.begin(), triangles.end(), func);
+    });
 }
 
 } // namespace blastgeolib
