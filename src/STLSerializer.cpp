@@ -35,12 +35,9 @@ void STLSerializer::writeMeshData(const std::string& filename, const PolygonMesh
         const PolygonMesh::Vertex& v3 = verts[idx3];
 
         PolygonMesh::Normal faceNormal;
-        if (normals.size() > 0)
-        {
+        if (normals.size() > 0) {
             faceNormal = (normals[idx1] + normals[idx2] + normals[idx3]) / 3.0f;
-        }
-        else
-        {
+        } else {
             Eigen::Vector3f edge1 = v2 - v1;
             Eigen::Vector3f edge2 = v3 - v1;
             faceNormal = edge1.cross(edge2).normalized();

@@ -51,7 +51,6 @@ std::unique_ptr<PolygonMesh> OBJSerializer::loadMeshData(const std::string& file
     }
 
     std::string line;
-    int nextIndex = 0;
 
     while (std::getline(file, line)) {
         std::istringstream ss(line);
@@ -86,17 +85,21 @@ std::unique_ptr<PolygonMesh> OBJSerializer::loadMeshData(const std::string& file
                 VertexCombination vc = { vIdx, vtIdx, vnIdx };
 
                 if (vertexMap.find(vc) == vertexMap.end()) {
-                    vertexMap[vc] = nextIndex;
+                    vertexMap[vc] = finalVertices.size();
 
                     finalVertices.push_back(vertices[vIdx]);
                     if (vtIdx != -1) {
                         finalTexCoords.push_back(texCoords[vtIdx]);
-                    }
-                    if (vnIdx != -1) {
-                        finalNormals.push_back(normals[vnIdx]);
+                    } else {
+                        finalTexCoords.push_back({0.0f, 0.0f});
                     }
 
-                    nextIndex++;
+
+                    if (vnIdx != -1) {
+                        finalNormals.push_back(normals[vnIdx]);
+                    } else {
+                        finalNormals.push_back({0.0f, 0.0f, 0.0f});
+                    }
                 }
 
                 face.vertexIndices.push_back(vertexMap[vc]);
