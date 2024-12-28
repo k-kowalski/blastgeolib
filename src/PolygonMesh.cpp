@@ -49,6 +49,13 @@ void PolygonMesh::scale(const Eigen::Vector3f& scaleFactors) {
         homoVertex = scaleMatrix * homoVertex;
         vertex = homoVertex.head<3>();
     }
+
+    Eigen::Matrix4f invTranspose = scaleMatrix.inverse().transpose();
+    for (Normal& normal : normals) {
+        Eigen::Vector4f homoNormal(normal.x(), normal.y(), normal.z(), 0.0f);
+        homoNormal = invTranspose * homoNormal;
+        normal = homoNormal.head<3>().normalized();
+    }
 }
 
 /*
