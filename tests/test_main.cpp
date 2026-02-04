@@ -52,3 +52,38 @@ TEST(PolygonMeshTest, Volume) {
     EXPECT_FLOAT_EQ(volume, 1.0f);
 }
 
+
+TEST(PolygonMeshTest, Scaling) {
+    std::vector<PolygonMesh::Vertex> v = { {1.0f, 1.0f, 1.0f} };
+    std::vector<PolygonMesh::Face> f;
+    // Normal (1, 1, 0) normalized
+    std::vector<PolygonMesh::Normal> n = { Eigen::Vector3f(1.0f, 1.0f, 0.0f).normalized() };
+    
+    PolygonMesh mesh(std::move(v), std::move(f), {}, std::move(n));
+    
+    // Test 1: Uniform scaling
+    mesh.scale({2.0f, 2.0f, 2.0f});
+    EXPECT_FLOAT_EQ(mesh.getVertices()[0].x(), 2.0f);
+    EXPECT_FLOAT_EQ(mesh.getVertices()[0].y(), 2.0f);
+    EXPECT_FLOAT_EQ(mesh.getVertices()[0].z(), 2.0f);
+
+    // Test 2: Zero scaling (should be ignored)
+    mesh.scale({0.0f, 1.0f, 1.0f});
+    EXPECT_FLOAT_EQ(mesh.getVertices()[0].x(), 2.0f); // Unchanged
+    
+    // Test 3: Normal transformation
+    // Current normal is still (1,1,0) normalized (uniform scale preserves direction)
+    // Scale X by 2. Matrix M = diag(2,1,1).
+    // InvTrans M^(-T) = diag(0.5, 1, 1).
+    // New normal vector pre-normalization: (0.5 * x, 1.0 * y, 0).
+    // Since x=y originally, new y should be 2x new x.
+    mesh.scale({2.0f, 1.0f, 1.0f});
+    
+    const auto& normals = mesh.getNormals();
+    // Use near equality or check ratio
+    float nx = normals[0].x();
+    float ny = normals[0].y();
+    
+    // We expect ny approx 2 * nx
+    EXPECT_NEAR(ny, 2.0f * nx, 1e-5f);
+}

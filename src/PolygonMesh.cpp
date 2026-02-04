@@ -39,10 +39,19 @@ void PolygonMesh::rotate(float angle, const Eigen::Vector3f& axis) {
 }
 
 void PolygonMesh::scale(const Eigen::Vector3f& scaleFactors) {
+    float sx = scaleFactors.x();
+    float sy = scaleFactors.y();
+    float sz = scaleFactors.z();
+
+    if (sx == 0.0f || sy == 0.0f || sz == 0.0f) {
+        std::cout << "Zero scaling factor detected, ignoring operation." << std::endl;
+        return;
+    }
+
     Eigen::Matrix4f scaleMatrix = Eigen::Matrix4f::Identity();
-    scaleMatrix(0, 0) = scaleFactors.x();
-    scaleMatrix(1, 1) = scaleFactors.y();
-    scaleMatrix(2, 2) = scaleFactors.z();
+    scaleMatrix(0, 0) = sx;
+    scaleMatrix(1, 1) = sy;
+    scaleMatrix(2, 2) = sz;
 
     for (Vertex& vertex : vertices) {
         Eigen::Vector4f homoVertex(vertex.x(), vertex.y(), vertex.z(), 1.0f);
